@@ -1,0 +1,283 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Match List{% endblock %}
+{% block content %}
+<body class="hold-transition sidebar-mini">
+    <!-- jQuery -->
+    <script src="{% static 'admin-lte/plugins/jquery/jquery.min.js' %}"></script>
+    <!-- jQuery UI 1.11.4 -->
+    <script src="{% static 'admin-lte/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+    <div class="wrapper">
+      <!-- Navbar -->
+      {% include 'header.html' %}
+      <!-- /.navbar -->
+    
+      <!-- Main Sidebar Container -->
+      {% include 'sidebar.html' %}
+    
+      <!-- Content Wrapper. Contains page content -->
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <div class="container-fluid">
+            <div class="row mb-2">
+              <div class="col-sm-6">
+                
+              </div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                  <li class="breadcrumb-item"><a href="{% url 'Main Page' %}">Home</a></li>
+                  <li class="breadcrumb-item active">Match List</li>
+                </ol>
+              </div>
+            </div>
+          </div><!-- /.container-fluid -->
+        </section>
+    
+        <!-- Main content -->
+        <section class="content">
+          <div class="container-fluid">
+            <div class="row">
+              <!-- left column -->
+              <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                  <div class="card-header">
+                    <h3 class="card-title">Match List</h3>
+                  </div>
+                  {% include 'messages.html' %}
+                  <!-- /.card-header -->
+                  <!-- form start -->
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <a class="btn btn-outline-light btn-md btn-default" data-toggle="modal" data-target="#exampleModal" alt="Add a match">
+                                    <i class="fa fa-plus"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <br>
+                        <table class="table table-bordered">
+                          <thead>
+                            <tr>
+                              <th style="width: 10px">#</th>
+                              <th style="width: 20%">Match Reference No.</th>
+                              <th>Teams</th>
+                              <th>Score</th>
+                              <th style="width: 10%">Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for match in match_list %}
+                            <tr>
+                              <td>{{ forloop.counter }}</td>
+                              <td>{{ match.matchid }}</td>
+                              <td>{{ match.team_1.name }} vs {{ match.team_2.name }}</td>
+                              <td>{{ match.team_1_score }} - {{ match.team_2_score}}</td>
+                              <td>
+                                <div class="btn btn-group">
+                                    <a class="btn btn-outline-light btn-md btn-default" data-toggle="modal" alt="Edit this match" onclick="openEditModal('{{match.matchid}}','{{match.team_1.name}}','{{match.team_2.name}}','{{match.team_1_score}}','{{match.team_2_score}}')">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <a class="btn btn-outline-light btn-md btn-default" data-toggle="modal" alt="Delete this match" onclick="openDeleteModal('{{match.matchid}}')">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                </div>
+                              </td>
+                            </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                      </div>
+                    <!-- /.card-body -->
+    
+                    <div class="card-footer">
+  
+                        <!-- Modal Add -->
+                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Add a match</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="add-match" method="post">
+                                        {% csrf_token %}
+                                        <div class="row">
+                                            <input type="text" name="choice" value="add" hidden>
+                                            <div class="col-md-5">
+                                                <input type="text" class="form-control" name="team_1" placeholder="Team 1">
+                                            </div> 
+                                            vs
+                                            <div class="col-md-5">
+                                                <input type="text" class="form-control" name="team_2" placeholder="Team 2">
+                                            </div> 
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <input type="text" class="form-control" name="team_1_score" placeholder="Score">
+                                            </div> 
+                                            -
+                                            <div class="col-md-5">
+                                                <input type="text" class="form-control" name="team_2_score" placeholder="Score">
+                                            </div> 
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" name="Submit" value="Submit" class="btn btn-primary" onclick="submitFormAdd()">Submit</button>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        <!-- Modal Edit -->
+                        <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Edit Match No </h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="edit-match" method="post">
+                                        {% csrf_token %}
+                                        <div class="row">
+                                            <input type="text" name="choice" value="edit" hidden>
+                                            <input type="text" name="match" id="matchid" hidden>
+                                            <div class="col-md-5">
+                                                <input type="text" class="form-control" name="team_1" id="team1name" placeholder="Team 1" disabled>
+                                            </div> 
+                                            vs
+                                            <div class="col-md-5">
+                                                <input type="text" class="form-control" name="team_2" id="team2name" placeholder="Team 2" disabled>
+                                            </div> 
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <input type="text" class="form-control" name="team_1_score" id="team_1_score" placeholder="Score">
+                                            </div> 
+                                            -
+                                            <div class="col-md-5">
+                                                <input type="text" class="form-control" name="team_2_score" id="team_2_score" placeholder="Score">
+                                            </div> 
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" name="Submit" value="Submit" class="btn btn-primary" onclick="submitForm()">Save</button>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        <!-- Modal Delete -->
+                        <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Delete a match</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="delete-match" method="post">
+                                        {% csrf_token %}
+                                        <div class="row">
+                                            <input type="text" name="choice" value="delete" hidden> 
+                                            <input type="text" name="match" id="matchiddelete" hidden>
+                                            Are you sure to delete match no. <div id="matchidd"></div> ?
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button type="button" name="Submit" value="Submit" class="btn btn-danger" onclick="submitFormDelete()">Delete</button>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                <!-- /.card -->   
+              </div>
+              <!--/.col (left) -->
+            </div>
+            <!-- /.row -->
+          </div><!-- /.container-fluid -->
+        </section>
+        <!-- /.content -->
+      </div>
+      <!-- /.content-wrapper -->
+      <footer class="main-footer">
+        <div class="float-right d-none d-sm-block">
+          <b>Version</b> 1.0.0
+        </div>
+        <strong>Copyright &copy; 2023-2024 <a href="https://ashyokhei.hashnode.dev/">Ahmad Asyraf</a>.</strong> All rights reserved.
+      </footer>
+    
+      <!-- Control Sidebar -->
+      <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+      </aside>
+      <!-- /.control-sidebar -->
+    </div>
+    <!-- ./wrapper -->
+    <!-- Page specific script -->
+    <script>
+    $(function () {
+      bsCustomFileInput.init();
+    });
+    </script>
+    <script>
+        function openEditModal(matchid,team1, team2, team_1_score, team_2_score) {
+        // Set the value of the input fields to the match info
+        document.getElementById("matchid").value = matchid;
+        document.getElementById("team1name").value = team1;
+        document.getElementById("team2name").value = team2;
+        document.getElementById("team_1_score").value = team_1_score;
+        document.getElementById("team_2_score").value = team_2_score;
+        $('#exampleModal1').modal('show');
+        }
+        function openDeleteModal(matchid) {
+        // Set the value of the input fields to the match info
+        document.getElementById("matchiddelete").value = matchid;
+        document.getElementById("matchidd").innerHTML = matchid;
+        $('#exampleModal2').modal('show');
+        }
+    </script>
+    <script>
+        function submitForm() {
+            // Get the form element
+            var form = document.getElementById("edit-match");
+            
+            // Submit the form
+            form.submit();
+        }
+        function submitFormAdd() {
+            // Get the form element
+            var form = document.getElementById("add-match");
+            
+            // Submit the form
+            form.submit();
+        }
+        function submitFormDelete() {
+            // Get the form element
+            var form = document.getElementById("delete-match");
+            
+            // Submit the form
+            form.submit();
+        }
+    </script>
+    <script src="{% static 'admin-lte/plugins/sweetalert2/sweetalert2.min.js' %}"></script>
+    </body>
+{% endblock %}

@@ -1,0 +1,37 @@
+Intro to SQL
+
+- Basic Syntax
+
+- Data types
+
+- Operators
+
+- Functions
+
+Retrieving Dataa with SELECT
+
+- Selecting columns
+
+- Filtering data with WHERE
+
+- Sorting data with ORDER BY
+
+- Limiting data with LIMIT
+
+Aggregating Data with GROUP BY
+
+- Grouping data by columns
+
+- Aggregating data with function like COUNT, SUM, AVG etc
+
+- Filtering groups with havings
+
+JOIN TABLE
+
+- Inner Joins
+
+- Outer Joins
+
+- Self Joins
+
+- Cross Joins

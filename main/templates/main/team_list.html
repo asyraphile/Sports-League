@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Team List{% endblock %}
+{% block content %}
+<body class="hold-transition sidebar-mini">
+    <!-- jQuery -->
+    <script src="{% static 'admin-lte/plugins/jquery/jquery.min.js' %}"></script>
+    <!-- jQuery UI 1.11.4 -->
+    <script src="{% static 'admin-lte/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+    <div class="wrapper">
+      <!-- Navbar -->
+      {% include 'header.html' %}
+      <!-- /.navbar -->
+    
+      <!-- Main Sidebar Container -->
+      {% include 'sidebar.html' %}
+    
+      <!-- Content Wrapper. Contains page content -->
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <div class="container-fluid">
+            <div class="row mb-2">
+              <div class="col-sm-6">
+                
+              </div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                  <li class="breadcrumb-item"><a href="{% url 'Main Page' %}">Home</a></li>
+                  <li class="breadcrumb-item active">Team List</li>
+                </ol>
+              </div>
+            </div>
+          </div><!-- /.container-fluid -->
+        </section>
+    
+        <!-- Main content -->
+        <section class="content">
+          <div class="container-fluid">
+            <div class="row">
+              <!-- left column -->
+              <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                  <div class="card-header">
+                    <h3 class="card-title">Team List</h3>
+                  </div>
+                  {% include 'messages.html' %}
+                  <!-- /.card-header -->
+                  <!-- form start -->
+                  <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                          <thead>
+                            <tr>
+                              <th style="width: 10px">#</th>
+                              <th>Team Name</th>
+                              <th>Point</th>
+                              <th style="width: 20%">Date Created</th>
+                              <th style="width: 20%">Date Modified</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for team in team_list %}
+                            <tr>
+                              <td>{{ forloop.counter }}</td>
+                              <td>{{ team.name }}</td>
+                              <td>{{ team.point }}</td>
+                              <td>{{ team.date_created }}</td>
+                              <td>{{ team.date_modified }}</td>
+                            </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                      </div>
+                    <!-- /.card-body -->
+    
+                    <div class="card-footer">
+                    </div>
+                    
+                  </form>
+                </div>
+                <!-- /.card -->   
+              </div>
+              <!--/.col (left) -->
+            </div>
+            <!-- /.row -->
+          </div><!-- /.container-fluid -->
+        </section>
+        <!-- /.content -->
+      </div>
+      <!-- /.content-wrapper -->
+      <footer class="main-footer">
+        <div class="float-right d-none d-sm-block">
+          <b>Version</b> 1.0.0
+        </div>
+        <strong>Copyright &copy; 2023-2024 <a href="https://ashyokhei.hashnode.dev/">Ahmad Asyraf</a>.</strong> All rights reserved.
+      </footer>
+    
+      <!-- Control Sidebar -->
+      <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+      </aside>
+      <!-- /.control-sidebar -->
+    </div>
+    <!-- ./wrapper -->
+    <!-- Page specific script -->
+    <script>
+    $(function () {
+      bsCustomFileInput.init();
+    });
+    </script>
+    <script src="{% static 'admin-lte/plugins/sweetalert2/sweetalert2.min.js' %}"></script>
+    </body>
+{% endblock %}
